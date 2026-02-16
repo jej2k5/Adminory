@@ -22,7 +22,7 @@ async def lifespan(app: FastAPI) -> AsyncGenerator[None, None]:
     logger.info(f"Environment: {settings.ENVIRONMENT}")
 
     # Initialize database
-    # await init_db()  # Uncomment when models are ready
+    await init_db()
     logger.info("Database initialized")
 
     yield
@@ -74,12 +74,16 @@ async def health() -> dict:
     }
 
 
-# TODO: Include API routers when ready
-# from app.api import auth, sso
+# Include API routers
+from app.api import auth
+
+app.include_router(auth.router, prefix="/api/auth", tags=["auth"])
+
+# TODO: Include additional routers when ready
+# from app.api import sso
 # from app.api.internal import system, users, workspaces, audit, jobs, feature_flags
 # from app.api.external import workspace, members, usage, api_keys, integrations, billing, support
 #
-# app.include_router(auth.router, prefix="/api/auth", tags=["auth"])
 # app.include_router(sso.router, prefix="/api/sso", tags=["sso"])
 # app.include_router(system.router, prefix="/api/internal/system", tags=["internal-system"])
 # ... etc
