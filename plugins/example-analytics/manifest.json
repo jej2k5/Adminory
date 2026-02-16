@@ -1,0 +1,46 @@
+{
+  "name": "example-analytics",
+  "version": "1.0.0",
+  "description": "Example analytics plugin with custom dashboard widgets",
+  "author": "Adminory Team",
+  "homepage": "https://github.com/adminory/example-analytics",
+  "adminory_version": ">=0.1.0",
+  "dependencies": {
+    "python": [],
+    "npm": ["recharts@^2.10.0"]
+  },
+  "permissions": [
+    "read:analytics",
+    "read:workspace"
+  ],
+  "hooks": {
+    "on_user_login": "server.hooks:on_user_login"
+  },
+  "routes": [
+    {
+      "path": "/api/plugins/example-analytics/stats",
+      "handler": "server.routes:get_stats",
+      "method": "GET",
+      "auth_required": true
+    }
+  ],
+  "widgets": [
+    {
+      "name": "AnalyticsChart",
+      "component": "client/components/AnalyticsChart",
+      "control_plane": ["internal", "external"],
+      "default_config": {
+        "refreshInterval": 60,
+        "chartType": "line"
+      }
+    }
+  ],
+  "tasks": [],
+  "settings": {
+    "enabled": {
+      "type": "boolean",
+      "default": true,
+      "label": "Enable Analytics"
+    }
+  }
+}

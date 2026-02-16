@@ -1,0 +1,64 @@
+{
+  "name": "example-billing",
+  "version": "1.0.0",
+  "description": "Example billing plugin with usage tracking and invoicing",
+  "author": "Adminory Team",
+  "homepage": "https://github.com/adminory/example-billing",
+  "adminory_version": ">=0.1.0",
+  "dependencies": {
+    "python": ["stripe==7.0.0"],
+    "npm": []
+  },
+  "permissions": [
+    "read:workspace",
+    "write:billing",
+    "read:usage"
+  ],
+  "hooks": {
+    "on_api_request": "server.hooks:track_api_usage"
+  },
+  "routes": [
+    {
+      "path": "/api/plugins/example-billing/usage",
+      "handler": "server.routes:get_usage",
+      "method": "GET",
+      "auth_required": true
+    },
+    {
+      "path": "/api/plugins/example-billing/invoice",
+      "handler": "server.routes:generate_invoice",
+      "method": "POST",
+      "auth_required": true
+    }
+  ],
+  "widgets": [
+    {
+      "name": "BillingWidget",
+      "component": "client/components/BillingWidget",
+      "control_plane": ["external"],
+      "default_config": {
+        "showChart": true
+      }
+    }
+  ],
+  "tasks": [
+    {
+      "name": "generate_monthly_invoices",
+      "handler": "server.tasks:generate_monthly_invoices",
+      "schedule": "0 0 1 * *"
+    }
+  ],
+  "settings": {
+    "stripe_api_key": {
+      "type": "string",
+      "required": true,
+      "encrypted": true,
+      "label": "Stripe API Key"
+    },
+    "billing_email": {
+      "type": "string",
+      "required": true,
+      "label": "Billing Email"
+    }
+  }
+}
