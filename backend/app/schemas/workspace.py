@@ -35,6 +35,8 @@ class WorkspaceResponse(WorkspaceBase):
     metadata: Dict[str, Any]
     created_at: datetime
     updated_at: datetime
+    members: list['WorkspaceMemberResponse'] = []
+    user_role: Optional[str] = None  # Current user's role in this workspace
 
     model_config = {"from_attributes": True}
 
