@@ -13,7 +13,7 @@ from app.database import Base
 
 # Import all models here to ensure they're registered with Base
 from app.models.user import User  # noqa: F401
-# from app.models.workspace import Workspace
+from app.models.workspace import Workspace, WorkspaceMember  # noqa: F401
 # ... etc
 
 # this is the Alembic Config object

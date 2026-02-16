@@ -53,6 +53,10 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+# Workspace context middleware
+from app.middleware.workspace import workspace_context_middleware
+app.middleware("http")(workspace_context_middleware)
+
 
 @app.get("/")
 async def root() -> dict:
@@ -76,8 +80,10 @@ async def health() -> dict:
 
 # Include API routers
 from app.api import auth
+from app.api.external import workspace
 
 app.include_router(auth.router, prefix="/api/auth", tags=["auth"])
+app.include_router(workspace.router, prefix="/api/external", tags=["workspace"])
 
 # TODO: Include additional routers when ready
 # from app.api import sso
