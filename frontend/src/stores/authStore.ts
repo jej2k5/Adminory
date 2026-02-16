@@ -2,6 +2,7 @@ import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
 import { User } from '@/types'
 import { apiClient } from '@/lib/api'
+import { toast } from '@/stores/toastStore'
 
 interface AuthState {
   user: User | null
@@ -59,9 +60,12 @@ export const useAuthStore = create<AuthStore>()(
             localStorage.setItem('access_token', response.access_token)
             localStorage.setItem('refresh_token', response.refresh_token)
           }
+
+          toast.success('Welcome back!', `Logged in as ${response.user.email}`)
         } catch (error: any) {
           const errorMessage = error.response?.data?.detail || 'Login failed'
           set({ error: errorMessage, isLoading: false })
+          toast.error('Login failed', errorMessage)
           throw new Error(errorMessage)
         }
       },
@@ -71,10 +75,11 @@ export const useAuthStore = create<AuthStore>()(
         try {
           await apiClient.post('/api/auth/register', { email, password, name })
           set({ isLoading: false })
-          // Note: User needs to verify email before logging in
+          toast.success('Account created!', 'Please check your email to verify your account')
         } catch (error: any) {
           const errorMessage = error.response?.data?.detail || 'Registration failed'
           set({ error: errorMessage, isLoading: false })
+          toast.error('Registration failed', errorMessage)
           throw new Error(errorMessage)
         }
       },
@@ -85,6 +90,7 @@ export const useAuthStore = create<AuthStore>()(
           if (refreshToken) {
             await apiClient.post('/api/auth/logout', { refresh_token: refreshToken })
           }
+          toast.info('Logged out', 'You have been successfully logged out')
         } catch (error) {
           console.error('Logout error:', error)
         } finally {
